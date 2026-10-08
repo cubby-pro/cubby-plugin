@@ -1,0 +1,15 @@
+{
+	"name": "cubby",
+	"description": "Cubby's plugin for AI agents: Cubby's MCP server and the build-on-cubby skill, so your agent can build, deploy and share web apps on Cubby.",
+	"owner": {
+		"name": "Cubby",
+		"url": "https://cubbyapps.com"
+	},
+	"plugins": [
+		{
+			"name": "cubby",
+			"source": "./plugins/cubby",
+			"description": "Build, deploy and share web apps on Cubby (cubbyapps.com): Cubby's MCP server plus the skill that teaches the build flow."
+		}
+	]
+}

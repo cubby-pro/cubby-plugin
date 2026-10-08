@@ -1,0 +1,11 @@
+{
+	"name": "cubby",
+	"displayName": "Cubby",
+	"version": "0.1.0",
+	"license": "MIT",
+	"description": "Build, deploy and share web apps on Cubby (cubbyapps.com), the universal dev server for AI-built applications. Bundles Cubby's MCP server and the build-on-cubby skill: plan, scaffold, write, check, deploy, then hand the user a live, private link.",
+	"author": {
+		"name": "Cubby",
+		"url": "https://cubbyapps.com"
+	}
+}
