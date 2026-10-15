@@ -15,13 +15,15 @@ Cubby's tools come from its MCP server, `https://mcp.cubbyapps.com/mcp`. If they
 or a call asks for authentication, the user has to connect. Signing in happens in their
 browser, so tell them exactly what to do, then wait until they say they are signed in:
 
-- **Claude Code** (with this plugin): if the plugin was just installed from the shell, run
-  `/reload-plugins` or restart Claude Code (`claude --continue` keeps the conversation); an
-  install from the `/plugin` panel loads it for you. Then run `/mcp`, pick the Cubby server
-  and choose Authenticate.
+- **Claude Code** (with this plugin): if the plugin was just installed from the shell, have
+  them run `/reload-plugins` rather than exit and restart: it loads the plugin into the open
+  session and keeps the conversation (a restart also works). An install from the `/plugin`
+  panel loads it for you. Then run `/mcp`, pick the Cubby server and choose Authenticate.
+  Claude Code and claude.ai each install the plugin on their own.
 - **claude.ai or Cowork**: open Customize → Plugins → Cubby and connect Cubby on the
   plugin's Connectors tab (on Team and Enterprise plans, an Owner adds the connector for the
-  organization first).
+  organization first). On claude.ai, start a new chat after adding the plugin: a chat that is
+  already open doesn't load a newly added plugin.
 - **Any other agent**: add `https://mcp.cubbyapps.com/mcp` as a remote HTTP MCP server. It
   signs in with OAuth in the browser; there is no API key.
 

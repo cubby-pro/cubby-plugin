@@ -8,9 +8,12 @@ from Cubby's docs, check it, deploy it, and hand you a live, private link.
 
 ## Use it
 
-Connect Cubby once. In Claude Code, run `/mcp`, pick the Cubby server and choose
-Authenticate. On claude.ai or in Cowork, connect Cubby on this plugin's Connectors tab.
-Either way you sign in with your Cubby account in your browser.
+Connect Cubby once. In Claude Code, run `/reload-plugins` after installing from the shell (it
+loads the plugin into the open session, with no restart), then run `/mcp`, pick the Cubby
+server and choose Authenticate. On claude.ai or in Cowork, connect Cubby on this plugin's
+Connectors tab. Either way you sign in with your Cubby account in your browser. On claude.ai,
+start a new chat after adding the plugin: a chat that is already open doesn't load a newly
+added plugin. Claude Code and claude.ai each install the plugin on their own.
 
 Then ask for what you need, for example: "build a PTO tracker for my team and put it
 online". Your agent plans the app with you, builds it, deploys it and sends you the link.

@@ -10,6 +10,8 @@ lists one plugin, `cubby`, and a skills source for any other agent.
 
 ## Install
 
+Claude Code and claude.ai each install the plugin on their own.
+
 ### Claude Code
 
 ```bash
@@ -18,17 +20,19 @@ claude plugin install cubby@cubby
 ```
 
 Inside a session, run `/plugin marketplace add cubby-pro/cubby-plugin`, then
-`/plugin install cubby@cubby` and install it from the panel, which loads it. A plugin
-installed from the shell loads the next time Claude Code starts, or after `/reload-plugins`
-in a session that is already open. Then run `/mcp`, pick the Cubby server and choose
-Authenticate. You sign in to Cubby in your browser.
+`/plugin install cubby@cubby` and install it from the panel, which loads it. After a shell
+install, run `/reload-plugins` in Claude Code: it loads the plugin into the session you have
+open, with no restart, and keeps the conversation (restarting Claude Code also loads it).
+Then run `/mcp`, pick the Cubby server and choose Authenticate. You sign in to Cubby in your
+browser.
 
 ### claude.ai and Cowork
 
 Open Customize → Plugins → Add → Add marketplace and paste
-`https://github.com/cubby-pro/cubby-plugin`. Install Cubby, then connect Cubby on the
-plugin's Connectors tab. On Team and Enterprise plans, an Owner adds the connector for the
-organization first.
+`https://github.com/cubby-pro/cubby-plugin` into its address box, which is easy to miss.
+Install Cubby, then connect Cubby on the plugin's Connectors tab. On Team and Enterprise
+plans, an Owner adds the connector for the organization first. On claude.ai, start a new chat
+after adding the plugin: a chat that is already open doesn't load a newly added plugin.
 
 ### Other agents
 
