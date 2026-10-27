@@ -177,17 +177,31 @@ its writes with its own data (auth.md#auth.rules).
 
 ## Connections, data and the other tools
 
-- **Outside systems: `add_connection`.** When the app's server must call an existing API or
-  database, call `add_connection` with the app id, the name the code will use
-  (`connections.<name>`) and the type, `postgres` or `generic_http`. It returns a
-  single-use setup link that expires in 15 minutes, where the user types the credentials
-  into Cubby's vault. Never ask for, accept or pass a key, password or connection string;
-  if one appears in chat, tell the user to rotate it and use the link
+- **Outside systems: `add_connection`.** When the app's server must call an outside API,
+  call `add_connection` with the app id, the name the code will use (`connections.<name>`)
+  and the type `generic_http`: an HTTPS API with one token or key, which includes a database
+  that answers queries over HTTPS (connections.md#connections.recipes has Snowflake,
+  Databricks, Supabase and HubSpot). `postgres` is refused: no app can query a plain
+  Postgres yet (connections.md#connections.types). It returns a single-use setup link that
+  expires in 15 minutes, where the user types the credentials into Cubby's vault. Never ask
+  for, accept or pass a key, password or connection string; if one appears in chat, tell
+  the user to rotate it and use the link
   (connections.md#connections.setup-link). Use connections only in server functions
   (connections.md#connections.usage). If only this conversation needs the data, use your
   own connectors and keep the app out of it. `list_connections` shows connections and their
   ids without their secrets; `remove_connection` deletes one by its id (it needs
   `confirm: true`; to rotate, remove and add again).
+- **Schedules: the user's own Claude runs them.** An app runs only while it serves a
+  request, so never write a server-side timer, a cron job or a polling loop into it
+  (scheduled-agents.md#scheduled-agents.no-tenant-cron). For "every morning" or "each
+  week", build the app's tools, then help the user set up a scheduled task in claude.ai or
+  in Claude Code (which called it a routine) that calls them through the app's own
+  connector (scheduled-agents.md#scheduled-agents.setup). Default to daily or weekly: a
+  run that touches the app's database keeps it awake for at least 5 minutes (2 on Free),
+  so an hourly schedule alone uses about 60 of the app's database hours a month, or about
+  24 on Free (scheduled-agents.md#scheduled-agents.cadence). An unattended run may refuse
+  or hold a change, because a saved prompt is not the user's consent: read the first run's
+  transcript with the user before trusting a schedule that changes data.
 - **The app's database: `db`.** It works once the app's database exists, after the first
   deploy. `action: "snapshot"` saves a restore point (take one before a risky change);
   `action: "restore"` rolls back to one (destructive: it needs `confirm: true`, and the
@@ -268,7 +282,8 @@ When the app is live (step 7), finish with:
    app's link. Someone without a Cubby account yet has 7 days to sign in with that address.
    Only workspace owners and admins can share, and there is no public link.
 4. **Its chat door:** if the app declares tools, the user can add `<app URL>/mcp` as a
-   custom connector so their assistant can use the app
+   custom connector so their assistant can use the app; on Team and Enterprise plans an
+   Owner adds each app's connector for the organization first
    (workspaces.md#workspaces.app-endpoint).
 
 For example: "Your PTO tracker is live at <the URL>. Open it and sign in with Cubby; only
