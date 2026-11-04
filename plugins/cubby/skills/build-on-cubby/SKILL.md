@@ -183,14 +183,14 @@ its writes with its own data (auth.md#auth.rules).
   that answers queries over HTTPS (connections.md#connections.recipes has Snowflake,
   Databricks, Supabase and HubSpot). `postgres` is refused: no app can query a plain
   Postgres yet (connections.md#connections.types). It returns a single-use setup link that
-  expires in 15 minutes, where the user types the credentials into Cubby's vault. Never ask
-  for, accept or pass a key, password or connection string; if one appears in chat, tell
-  the user to rotate it and use the link
+  expires in 15 minutes, where the user types the credentials into Cubby's vault. Never ask for,
+  accept or pass a key, password or connection string; if one appears in chat, tell the user to
+  revoke it at the service, make a new one and enter it through `add_connection`'s link
   (connections.md#connections.setup-link). Use connections only in server functions
-  (connections.md#connections.usage). If only this conversation needs the data, use your
-  own connectors and keep the app out of it. `list_connections` shows connections and their
-  ids without their secrets; `remove_connection` deletes one by its id (it needs
-  `confirm: true`; to rotate, remove and add again).
+  (connections.md#connections.usage). If only this conversation needs the data, use your own
+  connectors and keep the app out of it. `list_connections` shows each connection's id and health
+  (connections.md#connections.health), never its secret; `remove_connection` deletes one by its id
+  (it needs `confirm: true`; to replace a credential, call `add_connection` with the same name).
 - **Schedules: the user's own Claude runs them.** An app runs only while it serves a
   request, so never write a server-side timer, a cron job or a polling loop into it
   (scheduled-agents.md#scheduled-agents.no-tenant-cron). For "every morning" or "each
