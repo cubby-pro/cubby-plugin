@@ -69,16 +69,35 @@ URL, `https://mcp.cubbyapps.com/w/<workspaceId>/mcp`, printed on the dashboard's
      (auth.md#auth.access).
    - Declare the chat tools as you build each feature (agent-tools.md#agent-tools.doctrine):
      a read tool for each server function that lists or reads app data, and a mutation tool
-     with a confirm phrase for each action a colleague could ask an assistant to do. Each is
-     one inline `agentTool(...)` line in the tools array of `src/agent/tools.ts`, over an
-     existing server function (agent-tools.md#agent-tools.declaring) that a page also
-     imports, or the tool fails at runtime (agent-tools.md#agent-tools.client-reachable).
+     with a confirm phrase for each action a colleague could ask an assistant to do. A
+     repeated process the user describes (log a payment, approve a request) is one tool
+     whose server function runs the whole process on the server, not several tools the
+     chat must chain. Each tool is one inline `agentTool(...)` line in the tools array of
+     `src/agent/tools.ts`, over an existing server function
+     (agent-tools.md#agent-tools.declaring) that a page also imports, or the tool fails at
+     runtime (agent-tools.md#agent-tools.client-reachable).
      Never declare tools for sign-in, internal helpers or anything that returns secrets;
-     scope reads of other users' data by `user.id` or declare them `access: "edit"`
-     (agent-tools.md#agent-tools.read-scoping).
-   - Style through `design/tokens.json` (styling.md#styling.tokens-pipeline). The template
-     ships no chart library and `package.json` cannot be sent, so draw charts as your own
-     components, rendered client-only (charts.md#charts.client-only).
+     scope reads of other users' data by `user.id`, and refuse data a view share must
+     never see in the server function itself as well as declaring its tool
+     `access: "edit"`, since the declaration alone hides it only from agents, and a
+     page skips that read for anyone who cannot edit (agent-tools.md#agent-tools.read-scoping).
+   - Let the main lists show in the chat: give the app's one to three main list tools a
+     view, `view: "table"` or `view: "list"` on the read tool, so the result can also be
+     drawn in the conversation, where the chat app supports it, as a read-only table or
+     list in the app's own look (agent-tools.md#agent-tools.views). Never promise the
+     user that screen, and still state the answer in words: the text answer is unchanged.
+     An app created before in-chat views ignores the line (`check_app` reports
+     `agent-tool-view-ignored`): remove the view line there, and the theme line and
+     stylesheet import if the file has them, and say nothing to the user about the chat
+     showing results.
+     Never put a view on a mutation, and never hand-write a screen.
+   - Design is part of done. Before the first page, pick one of the three looks by what
+     the app is for, Ledger, Notebook or Studio, build every page by that look's rules,
+     and tell the user which look you picked and that they can ask for another
+     (styling.md#styling.design). Colors, radius and fonts come from `design/tokens.json`,
+     never from values scattered through the pages (styling.md#styling.tokens-pipeline).
+     The template ships no chart library and `package.json` cannot be sent, so draw
+     charts as your own components, rendered client-only (charts.md#charts.client-only).
    - Keep module scope free of work that can fail, and keep `requireUser()` and database
      calls out of the root route: every deploy boots the app before promoting it
      (deploy.md#deploy.boot-probe).
@@ -228,7 +247,7 @@ its writes with its own data (auth.md#auth.rules).
 | Paths in one `.cubby/remove` | 100 |
 | An app's stored source | 1,000 files and 16 MiB |
 | The built server bundle | 3,072 KiB gzip |
-| Builds | 30 per hour, one at a time |
+| Builds | 60 per hour, one at a time |
 | Staging calls (`build: false` or `upload: true`) | 120 per hour |
 | `db` calls | 60 per hour |
 | `share` calls | 60 per hour |
@@ -242,7 +261,7 @@ room. Builds per month are pooled across the workspace's apps and reset on the 1
 When they run out, `deploy_app` refuses to build, naming the plan and the reset date; that
 call stores nothing, but staging with `build: false` still works, so tell the user and build
 after the reset or an upgrade. On Free, a personal workspace holds 1 app and creates at most
-1 new app per rolling 24 hours, an organization on Free holds none, apps on Free have no
+2 new apps per rolling 24 hours, an organization on Free holds none, apps on Free have no
 connections, and a workspace on Free has 40 builds a month. Upgrades:
 https://app.cubbyapps.com/billing.
 
@@ -281,10 +300,16 @@ When the app is live (step 7), finish with:
    edit or deploy; each includes the ones before it), and the person gets an email with the
    app's link. Someone without a Cubby account yet has 7 days to sign in with that address.
    Only workspace owners and admins can share, and there is no public link.
-4. **Its chat door:** if the app declares tools, the user can add `<app URL>/mcp` as a
-   custom connector so their assistant can use the app; on Team and Enterprise plans an
-   Owner adds each app's connector for the organization first
-   (workspaces.md#workspaces.app-endpoint).
+4. **Its chat door:** A chat uses the app once the user adds `<app URL>/mcp` as a
+   connector; this connection does not. So if the app declares tools, give the user that
+   address to add to their chat app as a custom connector, and never tell them this chat
+   can read or change the app's data; on Team and Enterprise plans an Owner adds each
+   app's connector for the organization first
+   (workspaces.md#workspaces.app-endpoint). If a tool has a view and `check_app` did not
+   report `agent-tool-view-ignored`, say only that its result can also show in the chat
+   where the chat app supports it; if it did, say nothing about the chat showing it.
+5. **Its look:** which of the three looks you picked, and that they can ask for another.
 
 For example: "Your PTO tracker is live at <the URL>. Open it and sign in with Cubby; only
-your workspace and the people you share it with can get in. Want me to share it?"
+your workspace and the people you share it with can get in. To use it from your chat, add
+<the URL>/mcp as a connector. Want me to share it?"
